@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — YAS Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">YAS Academy <small>ADMIN</small></div>
+  <nav>
+    <span class="who" id="who"></span>
+    <button onclick="signOutAndRedirect()">Sign out</button>
+  </nav>
+</div>
+
+<div class="shell" id="shell">
+
+  <div id="batch-list-view">
+    <div class="section-head">
+      <h2>Batches</h2>
+      <button class="btn gold small" onclick="showNewBatchForm()">+ New batch</button>
+    </div>
+    <div id="new-batch-form" style="display:none; margin-bottom:20px;">
+      <div class="form-card">
+        <div class="field"><label>Batch name</label><input id="nb-name" placeholder="e.g. TNPSC Group 2 — 2026" /></div>
+        <div class="field"><label>Description (optional)</label><input id="nb-desc" placeholder="e.g. Evening batch, Thanjavur" /></div>
+        <button class="btn gold" onclick="createBatch()">Create batch</button>
+        <button class="btn ghost" onclick="hideNewBatchForm()">Cancel</button>
+      </div>
+    </div>
+    <div id="batch-list">Loading…</div>
+  </div>
+
+  <div id="batch-detail-view" style="display:none;">
+    <div class="section-head">
+      <h2 id="batch-title"></h2>
+      <button class="btn ghost small" onclick="closeBatch()">← All batches</button>
+    </div>
+    <div class="tabs">
+      <button data-tab="students" class="active">Students</button>
+      <button data-tab="materials">Materials</button>
+      <button data-tab="videos">Videos</button>
+      <button data-tab="tests">Tests</button>
+      <button data-tab="live">Live sessions</button>
+    </div>
+    <div id="tab-content"></div>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>

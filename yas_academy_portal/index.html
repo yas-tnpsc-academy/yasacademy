@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>YAS Academy — Learning Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<div class="auth-screen">
+  <div class="auth-side">
+    <div class="eyebrow-line"></div>
+    <h1>Your batch. Your materials. Anywhere.</h1>
+    <p>Recorded classes, live sessions, study notes and tests for TNPSC, TET, TRB and SSC — kept in one place, only for the batch you've been added to.</p>
+  </div>
+
+  <div class="auth-form-wrap">
+    <div class="form-card">
+      <h2 style="margin-bottom:4px;">Sign in</h2>
+      <p style="margin-bottom:20px;">Use the email your academy set up for you.</p>
+
+      <form id="login-form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" required autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn gold" style="width:100%; justify-content:center;">Sign in</button>
+        <div id="msg" class="msg"></div>
+      </form>
+
+      <p style="margin-top:18px; font-size:0.82rem;">
+        Forgot your password? <a href="#" id="reset-link" style="color:var(--gold-500); font-weight:600;">Reset it</a>
+      </p>
+      <p style="margin-top:24px; font-size:0.78rem; color:var(--ink-soft);">
+        Don't have an account? Your admin adds every student directly — ask your batch coordinator.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script>
+const form = document.getElementById("login-form");
+const msg = document.getElementById("msg");
+
+// If already signed in, skip straight to the right dashboard.
+auth.onAuthStateChanged(async (user) => {
+  if (!user) return;
+  const doc = await db.collection("users").doc(user.uid).get();
+  if (doc.exists) {
+    window.location.href = doc.data().role === "admin" ? "admin.html" : "dashboard.html";
+  }
+});
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  msg.textContent = "";
+  msg.className = "msg";
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    // onAuthStateChanged above handles the redirect
+  } catch (err) {
+    msg.textContent = err.code === "auth/invalid-credential"
+      ? "Email or password is incorrect."
+      : "Couldn't sign in — " + err.message;
+    msg.classList.add("error");
+  }
+});
+
+document.getElementById("reset-link").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  if (!email) { msg.textContent = "Type your email above first, then tap Reset it."; msg.className = "msg error"; return; }
+  try {
+    await auth.sendPasswordResetEmail(email);
+    msg.textContent = "Password reset email sent — check your inbox.";
+    msg.className = "msg ok";
+  } catch (err) {
+    msg.textContent = "Couldn't send reset email — " + err.message;
+    msg.className = "msg error";
+  }
+});
+</script>
+</body>
+</html>
